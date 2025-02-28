@@ -5,6 +5,28 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Monitor Clínico</title>
     <style>
+        .card {
+  /* Mantenha os estilos existentes e adicione: */
+  position: relative;
+  transition: all 0.3s ease;
+}
+
+.card.nao-clicado {
+  background: #e9ecef;
+}
+
+.card.nao-clicado::after {
+  content: "?";
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  color: #495057;
+  font-size: 1.4em;
+  font-weight: 800;
+  opacity: 0.8;
+}
+
+        
         body {
             margin: 0;
             padding: 20px;
@@ -89,6 +111,23 @@
     <div id="data-container"></div>
 
     <script>
+const render = (data) => {
+    const container = document.getElementById('data-container');
+    container.innerHTML = data.map(paciente => `
+        <div class="card nao-clicado"> <!-- Adicione a classe nao-clicado -->
+            <!-- ... conteúdo existente do card ... -->
+        </div>
+    `).join('');
+
+    // Adicione eventos de clique para remover o estado
+    document.querySelectorAll('.card').forEach(card => {
+        card.addEventListener('click', () => {
+            card.classList.remove('nao-clicado');
+        });
+    });
+}
+
+        
         const render = (data) => {
             const container = document.getElementById('data-container');
             container.innerHTML = data.map(paciente => `
