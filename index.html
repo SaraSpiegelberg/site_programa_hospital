@@ -156,10 +156,8 @@
 </head>
 <body>
     <div class="login-container">
-        <div class="wave-decoration"></div>
-        
         <div class="login-header">
-            <img src="caminho/para/logo-hospital.png" alt="Logo Hospital" class="hospital-logo">
+            <img src="logo-hospital.png" alt="Logo Hospital" class="hospital-logo">
             <h2>Acesso Restrito</h2>
             <p>Sistema Interno de Saúde</p>
         </div>
@@ -212,14 +210,14 @@
 
                 if (response.ok) {
                     localStorage.setItem("autenticado", "true");
-                    window.location.href = "page.html";
+                    window.location.href = "page.html"; // Redireciona para a página após login bem-sucedido
                 } else {
                     errorElement.textContent = data.message || "Credenciais inválidas";
                     errorElement.style.display = 'block';
                 }
             } catch (error) {
                 console.error("Erro:", error);
-                errorElement.textContent = "Erro de conexão com o servidor";
+                errorElement.textContent = "Erro de conexão com o servidor. Verifique se a API está funcionando.";
                 errorElement.style.display = 'block';
             }
         }
