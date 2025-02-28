@@ -14,11 +14,36 @@
             position: relative;
         }
 
+        h1 {
+            text-align: center;
+            color: #00796b;
+            margin: 20px 0;
+            font-size: 2.5em;
+        }
+
+        button {
+            background: #00796b;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 25px;
+            font-size: 0.9em;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 1000;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+        }
+
+        button:hover {
+            background: #004d40;
+            transform: scale(1.05);
+        }
+
         #data-container {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-            gap: 20px;
-            padding: 20px;
+            margin-top: 70px; /* Para não sobrepor o botão */
         }
 
         .paciente {
@@ -26,10 +51,7 @@
             border-radius: 10px;
             padding: 20px;
             box-shadow: 0 8px 30px rgba(0, 77, 64, 0.1);
-            transition: all 0.3s ease;
-            display: flex;
-            flex-direction: column;
-            border-top: 5px solid #00796b;
+            margin-bottom: 20px;
         }
 
         .paciente-header {
@@ -52,27 +74,6 @@
             font-size: 0.9em;
             display: inline-block;
             margin-top: 5px;
-        }
-
-        button {
-            background: #00796b;
-            color: white;
-            padding: 10px 20px;
-            border: none;
-            border-radius: 25px;
-            font-size: 0.9em;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            position: fixed;
-            top: 20px;
-            right: 20px;
-            z-index: 1000;
-            box-shadow: 0 3px 10px rgba(0,0,0,0.1);
-        }
-
-        button:hover {
-            background: #004d40;
-            transform: scale(1.05);
         }
 
         .dados-section {
@@ -99,17 +100,6 @@
             animation: pulse 1.5s infinite;
         }
 
-        .historico-list {
-            list-style-type: none;
-            padding-left: 0;
-            margin: 5px 0;
-        }
-
-        .historico-list li {
-            padding: 5px 0;
-            border-bottom: 1px solid #eee;
-        }
-
         @keyframes pulse {
             0% { opacity: 1; }
             50% { opacity: 0.5; }
@@ -117,10 +107,6 @@
         }
 
         @media (max-width: 768px) {
-            #data-container {
-                grid-template-columns: 1fr;
-            }
-            
             button {
                 top: 10px;
                 right: 10px;
@@ -132,6 +118,7 @@
 <body>
     <h1>🩺 Monitor de Pacientes</h1>
     <button id="fetch-data" title="Atualizar Dados">⟳</button>
+    <div id="loading">Buscando dados...</div>
     <div id="data-container"></div>
 
     <script>
@@ -153,13 +140,12 @@
                     card.innerHTML = `
                         <div class="paciente-header">
                             <h3>${paciente.nome.trim()}</h3>
-                            <span class="leito">Leito ${paciente.leito}</span>
+                            <span class="leito">Leito: ${paciente.leito}</span>
                         </div>
 
                         <div class="dados-section">
-                            <h4>Estado Atual</h4>
+                            <h4>Avaliação</h4>
                             <p><strong>Consciência:</strong> <span class="${paciente.lucidez === 'Inconsciente' ? 'alerta' : ''}">${paciente.lucidez}</span></p>
-                            <p><strong>Avaliação:</strong> ${paciente.avaliacao || 'N/A'}</p>
                         </div>
 
                         <div class="dados-section">
@@ -171,17 +157,18 @@
                         </div>
 
                         <div class="dados-section">
-                            <h4>Exames Recentes</h4>
-                            ${paciente.exames ? `<ul class="historico-list">
-                                ${paciente.exames.map(exame => `<li>${exame.data} - ${exame.tipo}: ${exame.resultado}</li>`).join('')}
-                            </ul>` : '<p>Nenhum exame recente</p>'}
+                            <h4>Histórico Médico</h4>
+                            <p>${paciente.historico.join(', ') || 'Nenhum histórico disponível'}</p>
                         </div>
 
                         <div class="dados-section">
-                            <h4>Histórico Médico</h4>
-                            <ul class="historico-list">
-                                ${paciente.historico.map(item => `<li>${item.data} - ${item.descricao}</li>`).join('')}
-                            </ul>
+                            <h4>Exames Recentes</h4>
+                            <p>${paciente.exames.join(', ') || 'Nenhum exame recente'}</p>
+                        </div>
+
+                        <div class="dados-section">
+                            <h4>Observações</h4>
+                            <p>${paciente.observacoes.join(', ') || 'Nenhuma observação'}</p>
                         </div>
                     `;
 
