@@ -1,10 +1,9 @@
-
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Registro de Pacientes</title>
+    <title>Sistema Hospitalar Integrado</title>
     <style>
         body {
             margin: 0;
@@ -117,6 +116,13 @@
     </style>
 </head>
 <body>
+    <script>
+        // Verificação de autenticação
+        if (!localStorage.getItem("autenticado")) {
+            window.location.href = "index.html";
+        }
+    </script>
+
     <h1>Registro de Pacientes</h1>
     <button id="fetch-data">↻ Atualizar</button>
     <div id="loading">Buscando dados...</div>
@@ -125,7 +131,6 @@
     <script>
         let refreshInterval;
 
-        // Função para buscar dados
         async function fetchData() {
             try {
                 document.getElementById('loading').style.display = 'block';
@@ -142,43 +147,41 @@
             }
         }
 
-        // Função para atualizar a interface
         function updateUI(data) {
-    const container = document.getElementById('data-container');
-    container.innerHTML = '';
+            const container = document.getElementById('data-container');
+            container.innerHTML = '';
 
-    data.forEach(paciente => {
-        const card = document.createElement('div');
-        card.className = 'paciente';
-        
-        card.innerHTML = `
-            <button class="btn-excluir" onclick="deletePaciente('${paciente.id}')">×</button>
-            <div class="cabecalho">
-                <h2 class="nome-leito">${paciente.nome.trim()}</h2>
-                <p class="leito">Leito: ${paciente.leito}</p>
-            </div>
-            
-            <div class="dados-container">
-                ${createDataItems(paciente)}
-            </div>
+            data.forEach(paciente => {
+                const card = document.createElement('div');
+                card.className = 'paciente';
+                
+                card.innerHTML = `
+                    <button class="btn-excluir" onclick="deletePaciente('${paciente.id}')">×</button>
+                    <div class="cabecalho">
+                        <h2 class="nome-leito">${paciente.nome.trim()}</h2>
+                        <p class="leito">Leito: ${paciente.leito}</p>
+                    </div>
+                    
+                    <div class="dados-container">
+                        ${createDataItems(paciente)}
+                    </div>
 
-            ${createSection('Dados Vitais', `
-                <div>Pressão: ${paciente.pressaoSistolica}/${paciente.pressaoDiastolica} mmHg</div>
-                <div>FC: ${paciente.frequenciaCardiaca} BPM</div>
-                <div>Sat.O2: ${paciente.saturacao}%</div>
-                <div>Temp: ${paciente.temperatura}°C</div>
-            `)}
+                    ${createSection('Dados Vitais', `
+                        <div>Pressão: ${paciente.pressaoSistolica}/${paciente.pressaoDiastolica} mmHg</div>
+                        <div>FC: ${paciente.frequenciaCardiaca} BPM</div>
+                        <div>Sat.O2: ${paciente.saturacao}%</div>
+                        <div>Temp: ${paciente.temperatura}°C</div>
+                    `)}
 
-            ${createSection('Exames', Array.isArray(paciente.exames) ? paciente.exames.join(', ') : 'Nenhum exame disponível')}
-            ${createSection('Histórico', Array.isArray(paciente.historico) ? paciente.historico.join(', ') : 'Nenhum histórico disponível')}
-            ${createSection('Observações', Array.isArray(paciente.observacoes) ? paciente.observacoes.join(', ') : 'Nenhuma observação disponível')}
-        `;
+                    ${createSection('Exames', Array.isArray(paciente.exames) ? paciente.exames.join(', ') : 'Nenhum exame disponível')}
+                    ${createSection('Histórico', Array.isArray(paciente.historico) ? paciente.historico.join(', ') : 'Nenhum histórico disponível')}
+                    ${createSection('Observações', Array.isArray(paciente.observacoes) ? paciente.observacoes.join(', ') : 'Nenhuma observação disponível')}
+                `;
 
-        container.appendChild(card);
-    });
-}
+                container.appendChild(card);
+            });
+        }
 
-        // Função para excluir paciente
         async function deletePaciente(id) {
             if (!confirm('Deseja realmente excluir este paciente?')) return;
             
@@ -188,13 +191,12 @@
                 });
 
                 if (!response.ok) throw new Error('Erro ao excluir paciente');
-                fetchData(); // Atualiza a lista após exclusão
+                fetchData();
             } catch (error) {
                 alert(error.message);
             }
         }
 
-        // Funções auxiliares
         function createDataItems(paciente) {
             return ['lucidez', 'movimento', 'dieta', 'algia', 'diurese', 'intestinais', 'acesso', 'ventilacao']
                 .map(field => `
@@ -224,14 +226,12 @@
             `;
         }
 
-        // Configuração inicial
         document.getElementById('fetch-data').addEventListener('click', () => {
             clearInterval(refreshInterval);
             fetchData();
             refreshInterval = setInterval(fetchData, 5000);
         });
 
-        // Iniciar atualização automática
         fetchData();
         refreshInterval = setInterval(fetchData, 5000);
     </script>
