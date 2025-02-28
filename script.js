@@ -1,7 +1,7 @@
 document.getElementById('fetch-data').addEventListener('click', async () => {
     try {
         const response = await fetch('https://minha-api-9sv0.onrender.com/relatorio', {
-            method: 'POST',
+            method: 'POST', // Certifique-se de que o método é POST
             headers: {
                 'Content-Type': 'application/json',
             },
