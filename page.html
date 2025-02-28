@@ -120,7 +120,7 @@
     <script>
         // Verificação de autenticação
         if (!localStorage.getItem("autenticado")) {
-            window.location.href = "index.html";
+            window.location.href = "index.html"; // Redireciona para a página de login se não autenticado
         }
     </script>
 
@@ -135,7 +135,12 @@
         async function fetchData() {
             try {
                 document.getElementById('loading').style.display = 'block';
-                const response = await fetch('https://minha-api-9sv0.onrender.com/relatorio');
+                const response = await fetch('https://minha-api-9sv0.onrender.com/relatorio', {
+                    method: 'GET',
+                    headers: {
+                        'Authorization': 'Bearer ' + localStorage.getItem("token") // Adiciona token de autenticação se necessário
+                    }
+                });
                 if (!response.ok) throw new Error('Erro na requisição: ' + response.status);
                 
                 const data = await response.json();
@@ -186,7 +191,10 @@
             
             try {
                 const response = await fetch(`https://minha-api-9sv0.onrender.com/relatorio/${id}`, {
-                    method: 'DELETE'
+                    method: 'DELETE',
+                    headers: {
+                        'Authorization': 'Bearer ' + localStorage.getItem("token") // Adiciona token de autenticação se necessário
+                    }
                 });
 
                 if (!response.ok) throw new Error('Erro ao excluir paciente');
