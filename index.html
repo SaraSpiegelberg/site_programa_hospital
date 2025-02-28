@@ -95,30 +95,57 @@
                 <div class="card">
                     <div class="card-header">
                         <div class="nome">${paciente.nome}</div>
-                        <div class="leito">Leito ${paciente.leito}</div>
+                        <div class="leito">Leito: ${paciente.leito}</div>
                     </div>
                     <div class="avaliacao-grid">
-                        <div class="item ${paciente.Lucidez === 'Inconsciente' ? 'alerta' : ''}">
-                            <span>Lucidez</span>${paciente.Lucidez}
+                        <div class="item ${paciente.lucidez === 'Inconsciente' ? 'alerta' : ''}">
+                            <span>Lucidez</span>${paciente.lucidez}
                         </div>
                         <div class="item">
-                            <span>Dieta</span>${paciente.Dieta}
+                            <span>Dieta</span>${paciente.dieta}
                         </div>
                         <div class="item">
-                            <span>Algia</span>${paciente.Algia}
+                            <span>Algia</span>${paciente.algia}
                         </div>
                         <div class="item">
-                            <span>Diurese</span>${paciente.Diurese}
+                            <span>Diurese</span>${paciente.diurese}
                         </div>
                         <div class="item">
-                            <span>Intestinais</span>${paciente.Intestinais}
+                            <span>Intestinais</span>${paciente.intestinais}
                         </div>
                         <div class="item">
-                            <span>Acesso</span>${paciente.Acesso}
+                            <span>Acesso</span>${paciente.acesso}
                         </div>
                         <div class="item">
-                            <span>Ventilação</span>${paciente.Ventilacao}
+                            <span>Ventilação</span>${paciente.ventilacao}
                         </div>
+                    </div>
+                    <div class="item">
+                        <span>Pressão Arterial</span>${paciente.pressaoSistolica}/${paciente.pressaoDiastolica} mmHg
+                    </div>
+                    <div class="item">
+                        <span>Frequência Cardíaca</span>${paciente.frequenciaCardiaca} BPM
+                    </div>
+                    <div class="item">
+                        <span>Saturação</span>${paciente.saturacao}%
+                    </div>
+                    <div class="item">
+                        <span>Temperatura</span>${paciente.temperatura}°C
+                    </div>
+                    <div class="item">
+                        <span>Observações</span>${paciente.observacoes.join(', ') || 'Nenhuma observação'}
+                    </div>
+                    <div class="item">
+                        <span>Histórico</span>
+                        <ul>
+                            ${paciente.historico.map(item => `<li>${item}</li>`).join('') || '<li>Nenhum histórico disponível</li>'}
+                        </ul>
+                    </div>
+                    <div class="item">
+                        <span>Exames</span>
+                        <ul>
+                            ${paciente.exames.map(exame => `<li>${exame}</li>`).join('') || '<li>Nenhum exame recente</li>'}
+                        </ul>
                     </div>
                 </div>
             `).join('');
