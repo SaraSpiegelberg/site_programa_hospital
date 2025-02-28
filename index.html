@@ -3,131 +3,37 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Relatório de Pacientes</title>
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <title>Exemplo de API</title>
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-        }
-
-        body {
-            background-color: #f5f9fa;
-            padding: 20px;
-        }
-
-        h1 {
-            color: #005f73;
-            text-align: center;
-            margin: 30px 0;
-            font-size: 2.5em;
-        }
-
-        button {
-            background-color: #0a9396;
-            color: white;
-            padding: 15px 30px;
-            border: none;
-            border-radius: 25px;
-            font-size: 1.1em;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            display: block;
-            margin: 0 auto 40px;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-        }
-
-        button:hover {
-            background-color: #067575;
-            transform: translateY(-2px);
-            box-shadow: 0 6px 8px rgba(0, 0, 0, 0.15);
-        }
-
         .paciente {
-            background: white;
-            border-radius: 10px;
-            padding: 25px;
-            margin: 20px auto;
-            max-width: 800px;
-            box-shadow: 0 2px 15px rgba(0, 0, 0, 0.08);
-            border-left: 5px solid #94d2bd;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            padding: 10px;
+            margin: 10px 0;
+            background-color: #f9f9f9;
         }
-
         h3 {
-            color: #005f73;
-            margin-bottom: 15px;
-            font-size: 1.8em;
-            border-bottom: 2px solid #ee9b00;
-            padding-bottom: 10px;
-        }
-
-        p {
-            margin: 12px 0;
+            margin: 0;
             color: #333;
-            font-size: 1.05em;
         }
-
-        strong {
-            color: #0a9396;
-            min-width: 160px;
-            display: inline-block;
+        p {
+            margin: 5px 0;
         }
-
-        .exames::before, .historico::before, .observacoes::before {
-            font-family: "Font Awesome 5 Free";
-            margin-right: 8px;
-            color: #ee9b00;
-        }
-
-        .exames::before { content: "\f0f0"; }
-        .historico::before { content: "\f15c"; }
-        .observacoes::before { content: "\f0eb"; }
-
-        .dados-vitais {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 15px;
-            background: #e9f8f7;
-            padding: 15px;
-            border-radius: 8px;
-            margin: 20px 0;
-        }
-
-        @media (max-width: 768px) {
-            body {
-                padding: 10px;
-            }
-            
-            h1 {
-                font-size: 2em;
-            }
-            
-            .paciente {
-                padding: 15px;
-                margin: 15px 0;
-            }
-            
-            .dados-vitais {
-                grid-template-columns: 1fr;
-            }
+        .exames, .historico, .observacoes {
+            margin-left: 20px;
         }
     </style>
 </head>
 <body>
-    <h1><i class="fas fa-hospital-user"></i> Relatório de Pacientes</h1>
-    <button id="fetch-data">
-        <i class="fas fa-download"></i> Atualizar Dados
-    </button>
+    <h1>Buscar Dados da API</h1>
+    <button id="fetch-data">Buscar Dados</button>
     <div id="data-container"></div>
 
     <script>
-        // O script permanece o mesmo, apenas o CSS foi modificado
         document.getElementById('fetch-data').addEventListener('click', async () => {
             try {
                 const response = await fetch('https://minha-api-9sv0.onrender.com/relatorio', {
-                    method: 'GET',
+                    method: 'GET', // Use GET para buscar dados
                 });
 
                 if (!response.ok) {
@@ -136,43 +42,41 @@
 
                 const data = await response.json();
                 const container = document.getElementById('data-container');
-                container.innerHTML = '';
+                container.innerHTML = ''; // Limpa o conteúdo anterior
 
+                // Itera sobre cada paciente e cria uma seção para eles
                 data.forEach(paciente => {
                     const pacienteDiv = document.createElement('div');
-                    pacienteDiv.classList.add('paciente');
+                    pacienteDiv.classList.add('paciente'); // Adiciona uma classe para estilização
 
                     pacienteDiv.innerHTML = `
                         <h3>${paciente.nome.trim()}</h3>
-                        <div class="dados-vitais">
-                            <p><strong>Leito:</strong> ${paciente.leito}</p>
-                            <p><strong>Lucidez:</strong> ${paciente.lucidez}</p>
-                            <p><strong>Movimento:</strong> ${paciente.movimento}</p>
-                            <p><strong>Dieta:</strong> ${paciente.dieta}</p>
-                        </div>
+                        <p><strong>Leito:</strong> ${paciente.leito}</p>
+                        <p><strong>Lucidez:</strong> ${paciente.lucidez}</p>
+                        <p><strong>Movimento:</strong> ${paciente.movimento}</p>
+                        <p><strong>Dieta:</strong> ${paciente.dieta}</p>
                         <p><strong>Algia:</strong> ${paciente.algia}</p>
                         <p><strong>Diurese:</strong> ${paciente.diurese}</p>
                         <p><strong>Intestinais:</strong> ${paciente.intestinais}</p>
-                        <div class="dados-vitais">
-                            <p><strong>Pressão Arterial:</strong> ${paciente.pressaoSistolica}/${paciente.pressaoDiastolica} mmHg</p>
-                            <p><strong>Frequência Cardíaca:</strong> ${paciente.frequenciaCardiaca} BPM</p>
-                            <p><strong>Saturação:</strong> ${paciente.saturacao} %</p>
-                            <p><strong>Temperatura:</strong> ${paciente.temperatura} °C</p>
-                        </div>
-                        <p class="exames"><strong>Exames:</strong> ${paciente.exames.join(', ')}</p>
-                        <p class="historico"><strong>Histórico:</strong> ${paciente.historico.join(', ')}</p>
-                        <p class="observacoes"><strong>Observações:</strong> ${paciente.observacoes.join(', ')}</p>
+                        <p><strong>Acesso:</strong> ${paciente.acesso}</p>
+                        <p><strong>Ventilação:</strong> ${paciente.ventilacao}</p>
+                        <p><strong>Pressão Arterial:</strong> ${paciente.pressaoSistolica}/${paciente.pressaoDiastolica} mmHg</p>
+                        <p><strong>Frequência Cardíaca:</strong> ${paciente.frequenciaCardiaca} BPM</p>
+                        <p><strong>Saturação:</strong> ${paciente.saturacao} %</p>
+                        <p><strong>Temperatura:</strong> ${paciente.temperatura} °C</p>
+                        <p><strong>Exames:</strong> <span class="exames">${paciente.exames.join(', ')}</span></p>
+                        <p><strong>Histórico:</strong> <span class="historico">${paciente.historico.join(', ')}</span></p>
+                        <p><strong>Observações:</strong> <span class="observacoes">${paciente.observacoes.join(', ')}</span></p>
+                        <hr>
                     `;
 
-                    container.appendChild(pacienteDiv);
+                    container.appendChild(pacienteDiv); // Adiciona a seção do paciente ao container
                 });
             } catch (error) {
                 console.error('Erro:', error);
                 document.getElementById('data-container').innerHTML = `
-                    <div class="paciente" style="text-align: center; color: #b71c1c;">
-                        <h3>Erro ao carregar dados</h3>
-                        <p>${error.message}</p>
-                    </div>
+                    <h2>Erro ao buscar dados</h2>
+                    <p>${error.message}</p>
                 `;
             }
         });
