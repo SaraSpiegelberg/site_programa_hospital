@@ -1,30 +1,7 @@
 document.getElementById('fetch-data').addEventListener('click', async () => {
     try {
         const response = await fetch('http://127.0.0.1:5000/relatorio', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-                nome: "Paciente Teste",
-                leito: "101",
-                lucidez: "LOC",
-                movimento: "Deambula",
-                dieta: "Aceita",
-                algia: "Leve",
-                diurese: "Presente",
-                intestinais: "Presente",
-                acesso: "MSD",
-                ventilacao: "AA",
-                pressaoSistolica: "120",
-                pressaoDiastolica: "80",
-                frequenciaCardiaca: "75",
-                saturacao: "98",
-                temperatura: "36.5",
-                historico: ["Histórico 1", "Histórico 2"],
-                exames: ["Exame 1", "Exame 2"],
-                observacoes: ["Observação 1", "Observação 2"],
-            }),
+            method: 'GET', // Método GET para solicitar dados
         });
 
         if (!response.ok) {
