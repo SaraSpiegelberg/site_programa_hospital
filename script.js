@@ -1,7 +1,7 @@
 document.getElementById('fetch-data').addEventListener('click', async () => {
     try {
         const response = await fetch('https://minha-api-9sv0.onrender.com/relatorio', {
-            method: 'GET', // Use GET se você estiver buscando dados
+            method: 'GET', // Use GET para buscar dados
         });
 
         if (!response.ok) {
