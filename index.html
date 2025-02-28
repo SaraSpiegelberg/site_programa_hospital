@@ -48,13 +48,6 @@
         button:hover {
             background-color: #218838;
         }
-
-        /* Estilo do conteúdo protegido */
-        #conteudoProtegido {
-            display: none; /* Esconde o conteúdo protegido inicialmente */
-            margin-top: 20px;
-            text-align: left;
-        }
     </style>
 </head>
 <body>
@@ -68,18 +61,15 @@
         </form>
     </div>
 
-    
-    </div>
-
     <script>
-        // Defina a senha correta
-        const senhaCorreta = "abc123"; // Altere para a senha desejada
+        const senhaCorreta = "admin"; // Altere para a senha desejada
 
         function verificarSenha() {
             const senhaInput = document.getElementById("senha").value;
             if (senhaInput === senhaCorreta) {
                 alert("Acesso permitido!");
-                window.location.href = "page.html";
+                localStorage.setItem("autenticado", "true"); // Armazena o estado de autenticação
+                window.location.href = "page.html"; // Redireciona para a página desejada
             } else {
                 alert("Senha incorreta. Tente novamente.");
             }
