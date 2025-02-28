@@ -23,6 +23,7 @@
       padding: 15px;
       box-shadow: 0 3px 10px rgba(0, 77, 64, 0.1);
       border-left: 4px solid #00796b;
+      position: relative;
     }
     .card-header {
       margin-bottom: 12px;
@@ -37,7 +38,7 @@
       color: #666;
       font-size: 0.9em;
     }
-    /* Agrupa os dados em um único bloco com espaçamento reduzido */
+    /* Dados agrupados com espaçamento reduzido */
     .dados-item {
       margin: 4px 0;
       padding: 4px;
@@ -63,6 +64,20 @@
       transform: scale(1.05);
       background: #00695c;
     }
+    /* Botão de exclusão dentro do card */
+    .delete-button {
+      background: #d32f2f;
+      color: white;
+      border: none;
+      border-radius: 20px;
+      padding: 4px 8px;
+      cursor: pointer;
+      margin-top: 10px;
+      font-size: 0.9em;
+    }
+    .delete-button:hover {
+      background: #b71c1c;
+    }
     .alerta {
       color: #d32f2f;
       font-weight: bold;
@@ -86,7 +101,7 @@
   <div id="data-container"></div>
 
   <script>
-    // Função para carregar os dados dos pacientes
+    // Carrega os dados dos pacientes
     async function loadData() {
       try {
         const response = await fetch('https://minha-api-9sv0.onrender.com/relatorio');
@@ -102,7 +117,7 @@
       }
     }
 
-    // Função para renderizar os cards com os dados dos pacientes em um bloco único
+    // Renderiza os cards com os dados dos pacientes
     function renderCards(pacientes) {
       const container = document.getElementById('data-container');
       container.innerHTML = pacientes.map(paciente => `
@@ -125,16 +140,36 @@
             ${paciente.ventilacao ? `Ventilação: ${paciente.ventilacao}<br>` : ''}
             ${paciente.observacoes && paciente.observacoes.length > 0 ? `Observações:<br>${paciente.observacoes.join('<br>')}` : ''}
           </div>
+          <!-- Botão para excluir o paciente -->
+          <button class="delete-button" onclick="deletePaciente('${paciente.id}')">Excluir</button>
         </div>
       `).join('');
     }
 
+    // Função para excluir o paciente (requisição DELETE)
+    async function deletePaciente(id) {
+      if (!confirm('Tem certeza que deseja excluir este paciente?')) return;
+      try {
+        const response = await fetch(`https://minha-api-9sv0.onrender.com/relatorio/${id}`, {
+          method: 'DELETE'
+        });
+        if (response.ok) {
+          alert('Paciente excluído com sucesso.');
+          loadData();
+        } else {
+          alert('Erro ao excluir paciente.');
+          console.error('Erro ao excluir paciente. Status:', response.status);
+        }
+      } catch (error) {
+        console.error('Erro:', error);
+        alert('Erro ao excluir paciente.');
+      }
+    }
+
     // Atualização automática a cada 5 segundos
     setInterval(loadData, 5000);
-
     // Atualização manual ao clicar no botão
     document.getElementById('fetch-data').addEventListener('click', loadData);
-
     // Carrega os dados ao iniciar
     loadData();
   </script>
