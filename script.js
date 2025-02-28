@@ -1,14 +1,46 @@
-document.getElementById('fetch-data').addEventListener('click', function() {
-    fetch('https://minha-api-9sv0.onrender.com')
-        .then(response => response.json())
-        .then(data => {
-            const container = document.getElementById('data-container');
-            container.innerHTML = ''; // Limpa o conteúdo anterior
-            data.forEach(item => {
-                const div = document.createElement('div');
-                div.innerHTML = `<h3>${item.title}</h3><p>${item.description}</p>`;
-                container.appendChild(div);
-            });
-        })
-        .catch(error => console.error('Erro ao buscar dados:', error));
+document.getElementById('fetch-data').addEventListener('click', async () => {
+    try {
+        const response = await fetch('https://minha-api-9sv0.onrender.com/relatorio', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                nome: "Paciente Teste",
+                leito: "101",
+                lucidez: "LOC",
+                movimento: "Deambula",
+                dieta: "Aceita",
+                algia: "Leve",
+                diurese: "Presente",
+                intestinais: "Presente",
+                acesso: "MSD",
+                ventilacao: "AA",
+                pressaoSistolica: "120",
+                pressaoDiastolica: "80",
+                frequenciaCardiaca: "75",
+                saturacao: "98",
+                temperatura: "36.5",
+                historico: ["Histórico 1", "Histórico 2"],
+                exames: ["Exame 1", "Exame 2"],
+                observacoes: ["Observação 1", "Observação 2"],
+            }),
+        });
+
+        if (!response.ok) {
+            throw new Error('Erro na requisição: ' + response.status);
+        }
+
+        const data = await response.json();
+        document.getElementById('data-container').innerHTML = `
+            <h2>Dados Recebidos:</h2>
+            <pre>${JSON.stringify(data, null, 2)}</pre>
+        `;
+    } catch (error) {
+        console.error('Erro:', error);
+        document.getElementById('data-container').innerHTML = `
+            <h2>Erro ao buscar dados</h2>
+            <p>${error.message}</p>
+        `;
+    }
 });
