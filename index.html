@@ -11,11 +11,12 @@
             background-color: #e3f2fd;
             font-family: 'Arial', sans-serif;
             min-height: 100vh;
+            position: relative;
         }
 
         #data-container {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
             gap: 20px;
             padding: 20px;
         }
@@ -26,36 +27,47 @@
             padding: 20px;
             box-shadow: 0 8px 30px rgba(0, 77, 64, 0.1);
             transition: all 0.3s ease;
-            min-height: 300px;
             display: flex;
             flex-direction: column;
             border-top: 5px solid #00796b;
         }
 
-        .paciente:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 12px 40px rgba(0, 77, 64, 0.2);
+        .paciente-header {
+            border-bottom: 2px solid #00796b;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
         }
 
-        h1 {
-            text-align: center;
+        .paciente-header h3 {
             color: #00796b;
-            margin: 30px 0;
-            font-size: 2.5em;
-            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+            margin: 0;
+            font-size: 1.8em;
+        }
+
+        .leito {
+            background-color: #00796b;
+            color: white;
+            padding: 5px 10px;
+            border-radius: 15px;
+            font-size: 0.9em;
+            display: inline-block;
+            margin-top: 5px;
         }
 
         button {
             background: #00796b;
             color: white;
-            padding: 15px 30px;
+            padding: 10px 20px;
             border: none;
             border-radius: 25px;
-            font-size: 1.1em;
+            font-size: 0.9em;
             cursor: pointer;
             transition: all 0.3s ease;
-            display: block;
-            margin: 20px auto;
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 1000;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.1);
         }
 
         button:hover {
@@ -63,32 +75,39 @@
             transform: scale(1.05);
         }
 
-        .dados-vitais {
-            background: #f5fffe;
-            padding: 15px;
-            border-radius: 8px;
+        .dados-section {
             margin: 10px 0;
-            flex-grow: 1;
+            padding: 15px;
+            background: #f5fffe;
+            border-radius: 8px;
         }
 
-        .dados-vitais p {
+        .dados-section h4 {
+            color: #00796b;
+            margin: 0 0 10px 0;
+            font-size: 1.1em;
+        }
+
+        .dados-section p {
             margin: 8px 0;
             color: #333;
-        }
-
-        .status {
-            display: flex;
-            justify-content: space-between;
-            margin: 10px 0;
-            padding: 10px;
-            background: #e8f5e9;
-            border-radius: 5px;
         }
 
         .alerta {
             color: #c62828;
             font-weight: bold;
             animation: pulse 1.5s infinite;
+        }
+
+        .historico-list {
+            list-style-type: none;
+            padding-left: 0;
+            margin: 5px 0;
+        }
+
+        .historico-list li {
+            padding: 5px 0;
+            border-bottom: 1px solid #eee;
         }
 
         @keyframes pulse {
@@ -102,19 +121,23 @@
                 grid-template-columns: 1fr;
             }
             
-            .paciente {
-                min-height: auto;
+            button {
+                top: 10px;
+                right: 10px;
+                padding: 8px 15px;
             }
         }
     </style>
 </head>
 <body>
     <h1>🩺 Monitor de Pacientes</h1>
-    <button id="fetch-data">Atualizar Status</button>
+    <button id="fetch-data" title="Atualizar Dados">⟳</button>
     <div id="data-container"></div>
 
     <script>
-        document.getElementById('fetch-data').addEventListener('click', async () => {
+        let refreshInterval;
+
+        async function fetchData() {
             try {
                 const response = await fetch('https://minha-api-9sv0.onrender.com/relatorio');
                 if (!response.ok) throw new Error('Erro na requisição: ' + response.status);
@@ -128,19 +151,37 @@
                     card.className = 'paciente';
                     
                     card.innerHTML = `
-                        <h3>${paciente.nome.trim()}</h3>
-                        <div class="status">
-                            <span>Leito: ${paciente.leito}</span>
-                            <span class="${paciente.lucidez === 'Inconsciente' ? 'alerta' : ''}">${paciente.lucidez}</span>
+                        <div class="paciente-header">
+                            <h3>${paciente.nome.trim()}</h3>
+                            <span class="leito">Leito ${paciente.leito}</span>
                         </div>
-                        
-                        <div class="dados-vitais">
+
+                        <div class="dados-section">
+                            <h4>Estado Atual</h4>
+                            <p><strong>Consciência:</strong> <span class="${paciente.lucidez === 'Inconsciente' ? 'alerta' : ''}">${paciente.lucidez}</span></p>
+                            <p><strong>Avaliação:</strong> ${paciente.avaliacao || 'N/A'}</p>
+                        </div>
+
+                        <div class="dados-section">
+                            <h4>Sinais Vitais</h4>
                             <p><strong>Pressão:</strong> ${paciente.pressaoSistolica}/${paciente.pressaoDiastolica} mmHg</p>
-                            <p><strong>Batimentos:</strong> ${paciente.frequenciaCardiaca} BPM</p>
+                            <p><strong>Frequência Cardíaca:</strong> ${paciente.frequenciaCardiaca} BPM</p>
                             <p><strong>Sat.O2:</strong> ${paciente.saturacao}%</p>
-                            <p><strong>Temp:</strong> ${paciente.temperatura}°C</p>
-                            <hr>
-                            <p><strong>Última Medicação:</strong> ${paciente.observacoes[0] || 'Nenhuma'}</p>
+                            <p><strong>Temperatura:</strong> ${paciente.temperatura}°C</p>
+                        </div>
+
+                        <div class="dados-section">
+                            <h4>Exames Recentes</h4>
+                            ${paciente.exames ? `<ul class="historico-list">
+                                ${paciente.exames.map(exame => `<li>${exame.data} - ${exame.tipo}: ${exame.resultado}</li>`).join('')}
+                            </ul>` : '<p>Nenhum exame recente</p>'}
+                        </div>
+
+                        <div class="dados-section">
+                            <h4>Histórico Médico</h4>
+                            <ul class="historico-list">
+                                ${paciente.historico.map(item => `<li>${item.data} - ${item.descricao}</li>`).join('')}
+                            </ul>
                         </div>
                     `;
 
@@ -157,7 +198,19 @@
                     </div>
                 `;
             }
-        });
+        }
+
+        // Configurar atualização automática
+        function startAutoRefresh() {
+            refreshInterval = setInterval(fetchData, 5000);
+        }
+
+        // Event listeners
+        document.getElementById('fetch-data').addEventListener('click', fetchData);
+        
+        // Iniciar
+        fetchData();
+        startAutoRefresh();
     </script>
 </body>
 </html>
