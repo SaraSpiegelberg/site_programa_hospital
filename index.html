@@ -68,10 +68,7 @@
         </form>
     </div>
 
-    <div id="conteudoProtegido">
-        <h1>Bem-vindo à área restrita!</h1>
-        <p>Este é o conteúdo protegido que você só pode ver após inserir a senha correta.</p>
-        <!-- Aqui você pode adicionar mais conteúdo protegido -->
+    
     </div>
 
     <script>
@@ -82,12 +79,7 @@
             const senhaInput = document.getElementById("senha").value;
             if (senhaInput === senhaCorreta) {
                 alert("Acesso permitido!");
-                // Aqui você pode redirecionar para outra página
-                // window.location.href = "outra_pagina.html"; // Descomente para redirecionar
-
-                // Ou mostre o conteúdo protegido
-                document.getElementById("loginArea").style.display = "none"; // Esconde a área de login
-                document.getElementById("conteudoProtegido").style.display = "block"; // Mostra o conteúdo protegido
+                window.location.href = "page.html";
             } else {
                 alert("Senha incorreta. Tente novamente.");
             }
