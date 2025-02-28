@@ -12,22 +12,6 @@
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
 
-        #data-container {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-            gap: 20px;
-            padding: 20px;
-        }
-
-        .paciente {
-            background: white;
-            border-radius: 10px;
-            padding: 20px;
-            box-shadow: 0 3px 15px rgba(0, 75, 100, 0.1);
-            border-left: 4px solid #00796B;
-            position: relative;
-        }
-
         h1 {
             text-align: center;
             color: #005f73;
@@ -46,11 +30,35 @@
             top: 20px;
             right: 20px;
             z-index: 100;
+            cursor: pointer;
         }
 
         #fetch-data:hover {
             background: #00796B;
             color: white;
+        }
+
+        #loading {
+            text-align: center;
+            color: #00796B;
+            font-style: italic;
+            display: none;
+        }
+
+        #data-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 20px;
+            padding: 20px;
+        }
+
+        .paciente {
+            background: white;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 3px 15px rgba(0, 75, 100, 0.1);
+            border-left: 4px solid #00796B;
+            position: relative;
         }
 
         .nome-leito {
@@ -105,13 +113,6 @@
         .btn-excluir:hover {
             opacity: 1;
             transform: scale(1.1);
-        }
-
-        #loading {
-            text-align: center;
-            color: #00796B;
-            font-style: italic;
-            display: none;
         }
     </style>
 </head>
@@ -169,4 +170,69 @@
                     ${createSection('Dados Vitais', `
                         <div>Pressão: ${paciente.pressaoSistolica}/${paciente.pressaoDiastolica} mmHg</div>
                         <div>FC: ${paciente.frequenciaCardiaca} BPM</div>
-                        <div>Sat.O2: ${paciente.saturacao}%</
+                        <div>Sat.O2: ${paciente.saturacao}%</div>
+                        <div>Temp: ${paciente.temperatura}°C</div>
+                    `)}
+
+                    ${createSection('Observações', Array.isArray(paciente.observacoes) ? paciente.observacoes.join(', ') : 'Nenhuma observação disponível')}
+                `;
+
+                container.appendChild(card);
+            });
+        }
+
+        async function deletePaciente(id) {
+            if (!confirm('Deseja realmente excluir este paciente?')) return;
+            
+            try {
+                const response = await fetch(`https://minha-api-9sv0.onrender.com/relatorio/${id}`, {
+                    method: 'DELETE'
+                });
+
+                if (!response.ok) throw new Error('Erro ao excluir paciente');
+                fetchData();
+            } catch (error) {
+                alert(error.message);
+            }
+        }
+
+        function createDataItems(paciente) {
+            return ['lucidez', 'dieta', 'algia', 'diurese', 'intestinais', 'acesso', 'ventilacao']
+                .map(field => `
+                    <div class="dados-item">
+                        <strong>${field.charAt(0).toUpperCase() + field.slice(1)}</strong>
+                        ${paciente[field]}
+                    </div>
+                `).join('');
+        }
+
+        function createSection(title, content) {
+            return `
+                <div class="secao">
+                    <strong>${title}</strong>
+                    <div>${content}</div>
+                </div>
+            `;
+        }
+
+        function showError(error) {
+            const container = document.getElementById('data-container');
+            container.innerHTML = `
+                <div class="paciente" style="text-align:center; color:#d32f2f;">
+                    <h3>Erro ao carregar dados</h3>
+                    <p>${error.message}</p>
+                </div>
+            `;
+        }
+
+        document.getElementById('fetch-data').addEventListener('click', () => {
+            clearInterval(refreshInterval);
+            fetchData();
+            refreshInterval = setInterval(fetchData, 5000);
+        });
+
+        fetchData();
+        refreshInterval = setInterval(fetchData, 5000);
+    </script>
+</body>
+</html>
