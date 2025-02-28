@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Acesso Hospitalar - Login</title>
     <style>
-        /* Estilos base */
         :root {
             --primary-color: #007bff;
             --hospital-blue: #0066cc;
@@ -24,7 +23,6 @@
             position: relative;
         }
 
-        /* Container principal */
         .login-container {
             background: white;
             padding: 2.5rem;
@@ -36,7 +34,6 @@
             overflow: hidden;
         }
 
-        /* Cabeçalho */
         .login-header {
             text-align: center;
             margin-bottom: 2rem;
@@ -54,7 +51,6 @@
             font-weight: 600;
         }
 
-        /* Formulário */
         .form-group {
             margin-bottom: 1.5rem;
             position: relative;
@@ -87,7 +83,6 @@
             color: #adb5bd;
         }
 
-        /* Botão */
         button {
             background: var(--hospital-blue);
             color: white;
@@ -107,7 +102,6 @@
             transform: translateY(-1px);
         }
 
-        /* Links adicionais */
         .additional-links {
             margin-top: 1.5rem;
             text-align: center;
@@ -124,7 +118,6 @@
             color: #004999;
         }
 
-        /* Efeito de onda decorativo */
         .wave-decoration {
             position: absolute;
             bottom: -50px;
@@ -137,12 +130,18 @@
             animation: wave 12s infinite linear;
         }
 
+        .error-message {
+            color: #e74c3c;
+            text-align: center;
+            margin-top: 1rem;
+            display: none;
+        }
+
         @keyframes wave {
             from { transform: rotate(0deg); }
             to { transform: rotate(360deg); }
         }
 
-        /* Responsividade */
         @media (max-width: 480px) {
             .login-container {
                 margin: 1rem;
@@ -160,13 +159,12 @@
         <div class="wave-decoration"></div>
         
         <div class="login-header">
-            <!-- Adicione o caminho correto para o logo do hospital -->
             <img src="caminho/para/logo-hospital.png" alt="Logo Hospital" class="hospital-logo">
             <h2>Acesso Restrito</h2>
             <p>Sistema Interno de Saúde</p>
         </div>
 
-        <form onsubmit="verificarSenha(); return false;">
+        <form onsubmit="verificarSenha(event)">
             <div class="form-group">
                 <label for="username">Usuário</label>
                 <input type="text" 
@@ -189,16 +187,27 @@
         <div class="additional-links">
             <a href="#">Esqueceu a senha?</a>
         </div>
+        <div class="error-message" id="errorMessage"></div>
     </div>
 
     <script>
-        // Mantido igual ao original
-        async function verificarSenha() {
-            const username = document.getElementById("username").value;
-            const senha = document.getElementById("senha").value;
+        async function verificarSenha(event) {
+            event.preventDefault();
+            const errorElement = document.getElementById('errorMessage');
+            errorElement.style.display = 'none';
+
+            const username = document.getElementById("username").value.trim();
+            const senha = document.getElementById("senha").value.trim();
+
+            if (!username || !senha) {
+                errorElement.textContent = "Preencha todos os campos!";
+                errorElement.style.display = 'block';
+                return;
+            }
 
             try {
-                const response = await fetch('http://127.0.0.1:5000/login', {
+                // Substitua pela URL da sua API hospedada
+                const response = await fetch('https://minha-api-9sv0.onrender.com/login', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'
@@ -206,17 +215,19 @@
                     body: JSON.stringify({ username, password: senha })
                 });
 
+                const data = await response.json();
+
                 if (response.ok) {
-                    const data = await response.json();
-                    alert("Acesso permitido!");
                     localStorage.setItem("autenticado", "true");
                     window.location.href = "page.html";
                 } else {
-                    alert("Credenciais incorretas. Tente novamente.");
+                    errorElement.textContent = data.message || "Credenciais inválidas";
+                    errorElement.style.display = 'block';
                 }
             } catch (error) {
-                console.error("Erro ao fazer a requisição:", error);
-                alert("Erro de conexão. Tente novamente mais tarde.");
+                console.error("Erro:", error);
+                errorElement.textContent = "Erro de conexão com o servidor";
+                errorElement.style.display = 'block';
             }
         }
     </script>
