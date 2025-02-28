@@ -37,11 +37,14 @@
       color: #666;
       font-size: 0.9em;
     }
+    /* Agrupa os dados em um único bloco com espaçamento reduzido */
     .dados-item {
-      margin: 8px 0;
-      padding: 8px;
+      margin: 4px 0;
+      padding: 4px;
       background: #f8f9fa;
       border-radius: 5px;
+      font-size: 0.95em;
+      line-height: 1.3;
     }
     button {
       background: #00796b;
@@ -99,7 +102,7 @@
       }
     }
 
-    // Função para renderizar os cards com os dados dos pacientes
+    // Função para renderizar os cards com os dados dos pacientes em um bloco único
     function renderCards(pacientes) {
       const container = document.getElementById('data-container');
       container.innerHTML = pacientes.map(paciente => `
@@ -108,34 +111,20 @@
             <h2 class="nome-paciente">${paciente.nome.trim()}</h2>
             <div class="leito">Leito: ${paciente.leito}</div>
           </div>
-          
           <div class="dados-item ${paciente.lucidez === 'Inconsciente' ? 'alerta' : ''}">
-            Estado: ${paciente.lucidez}
+            Estado: ${paciente.lucidez}<br>
+            Pressão: ${paciente.pressaoSistolica}/${paciente.pressaoDiastolica} mmHg<br>
+            FC: ${paciente.frequenciaCardiaca} BPM<br>
+            Sat.O₂: ${paciente.saturacao}%<br>
+            Temperatura: ${paciente.temperatura}°C<br>
+            ${paciente.dieta ? `Dieta: ${paciente.dieta}<br>` : ''}
+            ${paciente.algia ? `Algia: ${paciente.algia}<br>` : ''}
+            ${paciente.diurese ? `Diurese: ${paciente.diurese}<br>` : ''}
+            ${paciente.intestinais ? `Intestinais: ${paciente.intestinais}<br>` : ''}
+            ${paciente.acesso ? `Acesso: ${paciente.acesso}<br>` : ''}
+            ${paciente.ventilacao ? `Ventilação: ${paciente.ventilacao}<br>` : ''}
+            ${paciente.observacoes && paciente.observacoes.length > 0 ? `Observações:<br>${paciente.observacoes.join('<br>')}` : ''}
           </div>
-          <div class="dados-item">
-            Pressão: ${paciente.pressaoSistolica}/${paciente.pressaoDiastolica} mmHg
-          </div>
-          <div class="dados-item">
-            FC: ${paciente.frequenciaCardiaca} BPM
-          </div>
-          <div class="dados-item">
-            Sat.O₂: ${paciente.saturacao}%
-          </div>
-          <div class="dados-item">
-            Temperatura: ${paciente.temperatura}°C
-          </div>
-          ${paciente.dieta ? `<div class="dados-item">Dieta: ${paciente.dieta}</div>` : ''}
-          ${paciente.deambula ? `<div class="dados-item">Deambula: ${paciente.deambula}</div>` : ''}
-          ${paciente.algia ? `<div class="dados-item">Algia: ${paciente.algia}</div>` : ''}
-          ${paciente.diurese ? `<div class="dados-item">Diurese: ${paciente.diurese}</div>` : ''}
-          ${paciente.intestinais ? `<div class="dados-item">Intestinais: ${paciente.intestinais}</div>` : ''}
-          ${paciente.acesso ? `<div class="dados-item">Acesso: ${paciente.acesso}</div>` : ''}
-          ${paciente.ventilacao ? `<div class="dados-item">Ventilação: ${paciente.ventilacao}</div>` : ''}
-          ${paciente.observacoes && paciente.observacoes.length > 0 ? `
-            <div class="dados-item">
-              Observações:<br>
-              ${paciente.observacoes.join('<br>')}
-            </div>` : ''}
         </div>
       `).join('');
     }
