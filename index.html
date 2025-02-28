@@ -3,114 +3,108 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Monitor de Pacientes</title>
+    <title>Registro de Pacientes</title>
     <style>
         body {
             margin: 0;
             padding: 20px;
-            background-color: #e3f2fd;
-            font-family: 'Arial', sans-serif;
-            min-height: 100vh;
+            background-color: #f0faff;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
 
         #data-container {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-            gap: 20px;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 25px;
             padding: 20px;
         }
 
         .paciente {
-            background: rgba(255, 255, 255, 0.95);
-            border-radius: 10px;
+            background: white;
+            border-radius: 8px;
             padding: 20px;
-            box-shadow: 0 8px 30px rgba(0, 77, 64, 0.1);
-            transition: all 0.3s ease;
-            min-height: 300px;
-            display: flex;
-            flex-direction: column;
-            border-top: 5px solid #00796b;
-        }
-
-        .paciente:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 12px 40px rgba(0, 77, 64, 0.2);
+            box-shadow: 0 4px 15px rgba(0, 75, 100, 0.1);
+            border-left: 5px solid #00796B;
         }
 
         h1 {
             text-align: center;
-            color: #00796b;
+            color: #005f73;
             margin: 30px 0;
-            font-size: 2.5em;
-            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+            font-size: 2.2em;
         }
 
         button {
-            background: #00796b;
+            background: #00796B;
             color: white;
-            padding: 15px 30px;
+            padding: 12px 25px;
             border: none;
-            border-radius: 25px;
-            font-size: 1.1em;
+            border-radius: 5px;
+            font-size: 1em;
             cursor: pointer;
-            transition: all 0.3s ease;
             display: block;
             margin: 20px auto;
+            transition: background 0.3s;
         }
 
         button:hover {
-            background: #004d40;
-            transform: scale(1.05);
+            background: #004D40;
         }
 
-        .dados-vitais {
-            background: #f5fffe;
-            padding: 15px;
-            border-radius: 8px;
-            margin: 10px 0;
-            flex-grow: 1;
+        .cabecalho {
+            border-bottom: 2px solid #eee;
+            padding-bottom: 15px;
+            margin-bottom: 15px;
         }
 
-        .dados-vitais p {
-            margin: 8px 0;
-            color: #333;
+        .nome-leito {
+            color: #00796B;
+            font-size: 1.4em;
+            margin: 0 0 5px 0;
         }
 
-        .status {
-            display: flex;
-            justify-content: space-between;
-            margin: 10px 0;
-            padding: 10px;
-            background: #e8f5e9;
-            border-radius: 5px;
-        }
-
-        .alerta {
-            color: #c62828;
+        .leito {
+            color: #004D40;
             font-weight: bold;
-            animation: pulse 1.5s infinite;
+            font-size: 1.1em;
         }
 
-        @keyframes pulse {
-            0% { opacity: 1; }
-            50% { opacity: 0.5; }
-            100% { opacity: 1; }
+        .dados-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-bottom: 15px;
         }
 
-        @media (max-width: 768px) {
-            #data-container {
-                grid-template-columns: 1fr;
-            }
-            
-            .paciente {
-                min-height: auto;
-            }
+        .dados-item {
+            padding: 8px;
+            background: #f5f5f5;
+            border-radius: 4px;
+        }
+
+        .dados-item strong {
+            color: #004D40;
+            display: block;
+            margin-bottom: 3px;
+        }
+
+        .secao {
+            margin: 15px 0;
+            padding: 10px;
+            background: #f8f8f8;
+            border-radius: 4px;
+        }
+
+        .secao strong {
+            color: #00796B;
+            display: block;
+            margin-bottom: 8px;
         }
     </style>
 </head>
 <body>
-    <h1>🩺 Monitor de Pacientes</h1>
-    <button id="fetch-data">Atualizar Status</button>
+    <h1>Registro de Pacientes</h1>
+    <button id="fetch-data">Atualizar Dados</button>
     <div id="data-container"></div>
 
     <script>
@@ -128,19 +122,67 @@
                     card.className = 'paciente';
                     
                     card.innerHTML = `
-                        <h3>${paciente.nome.trim()}</h3>
-                        <div class="status">
-                            <span>Leito: ${paciente.leito}</span>
-                            <span class="${paciente.lucidez === 'Inconsciente' ? 'alerta' : ''}">${paciente.lucidez}</span>
+                        <div class="cabecalho">
+                            <h2 class="nome-leito">${paciente.nome.trim()}</h2>
+                            <p class="leito">Leito: ${paciente.leito}</p>
                         </div>
                         
-                        <div class="dados-vitais">
-                            <p><strong>Pressão:</strong> ${paciente.pressaoSistolica}/${paciente.pressaoDiastolica} mmHg</p>
-                            <p><strong>Batimentos:</strong> ${paciente.frequenciaCardiaca} BPM</p>
-                            <p><strong>Sat.O2:</strong> ${paciente.saturacao}%</p>
-                            <p><strong>Temp:</strong> ${paciente.temperatura}°C</p>
-                            <hr>
-                            <p><strong>Última Medicação:</strong> ${paciente.observacoes[0] || 'Nenhuma'}</p>
+                        <div class="dados-container">
+                            <div class="dados-item">
+                                <strong>Lucidez</strong>
+                                ${paciente.lucidez}
+                            </div>
+                            <div class="dados-item">
+                                <strong>Movimento</strong>
+                                ${paciente.movimento}
+                            </div>
+                            <div class="dados-item">
+                                <strong>Dieta</strong>
+                                ${paciente.dieta}
+                            </div>
+                            <div class="dados-item">
+                                <strong>Algia</strong>
+                                ${paciente.algia}
+                            </div>
+                            <div class="dados-item">
+                                <strong>Diurese</strong>
+                                ${paciente.diurese}
+                            </div>
+                            <div class="dados-item">
+                                <strong>Intestinais</strong>
+                                ${paciente.intestinais}
+                            </div>
+                            <div class="dados-item">
+                                <strong>Acesso</strong>
+                                ${paciente.acesso}
+                            </div>
+                            <div class="dados-item">
+                                <strong>Ventilação</strong>
+                                ${paciente.ventilacao}
+                            </div>
+                        </div>
+
+                        <div class="secao">
+                            <strong>Dados Vitais</strong>
+                            <div>Pressão: ${paciente.pressaoSistolica}/${paciente.pressaoDiastolica} mmHg</div>
+                            <div>FC: ${paciente.frequenciaCardiaca} BPM</div>
+                            <div>Sat.O2: ${paciente.saturacao}%</div>
+                            <div>Temp: ${paciente.temperatura}°C</div>
+                        </div>
+
+                        <div class="secao">
+                            <strong>Exames</strong>
+                            ${paciente.exames.join(', ')}
+                        </div>
+
+                        <div class="secao">
+                            <strong>Histórico</strong>
+                            ${paciente.historico.join(', ')}
+                        </div>
+
+                        <div class="secao">
+                            <strong>Observações</strong>
+                            ${paciente.observacoes.join(', ')}
                         </div>
                     `;
 
@@ -152,7 +194,7 @@
                 const container = document.getElementById('data-container');
                 container.innerHTML = `
                     <div class="paciente" style="text-align:center; color:#c62828;">
-                        <h3>Erro de Conexão</h3>
+                        <h3>Erro ao carregar dados</h3>
                         <p>${error.message}</p>
                     </div>
                 `;
