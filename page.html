@@ -105,6 +105,12 @@
 </head>
 <body>
   <script>
+const cors = require('cors');
+app.use(cors({
+  origin: 'https://saraspiegelberg.github.io/site_programa_hospital/pages.html', // Substitua pelo domínio da sua página HTML
+  credentials: true // Permite o envio de cookies
+}));
+    
     // Verificação de autenticação: redireciona se a chave "autenticado" não estiver presente
     if (!localStorage.getItem("autenticado")) {
       window.location.href = "index.html";
