@@ -105,9 +105,9 @@
 </head>
 <body>
   <script>
-    // Verificação de autenticação
+    // Verificação de autenticação: redireciona se a chave "autenticado" não estiver presente
     if (!localStorage.getItem("autenticado")) {
-      window.location.href = "index.html"; // Redireciona para a página de login se não autenticado
+      window.location.href = "index.html";
     }
   </script>
 
@@ -117,18 +117,12 @@
   <div id="data-container"></div>
 
   <script>
-    // Caso use autenticação baseada em sessão, não é necessário verificar token,
-    // mas se estiver utilizando um token, ajuste a verificação conforme sua implementação.
-    if (!localStorage.getItem("autenticado") || !localStorage.getItem("token")) {
-      window.location.href = "index.html"; // Redireciona para a página de login se não autenticado
-    }
-    
     let refreshInterval;
 
     async function fetchData() {
       try {
         document.getElementById('loading').style.display = 'block';
-        // Requisição GET utilizando credentials para envio de cookies da sessão
+        // Requisição GET com envio de cookies (autenticação por sessão)
         const response = await fetch('https://minha-api-9sv0.onrender.com/relatorio', {
           method: 'GET',
           credentials: 'include'
@@ -155,25 +149,22 @@
       data.forEach(paciente => {
         const card = document.createElement('div');
         card.className = 'paciente';
-        
+
         card.innerHTML = `
           <button class="btn-excluir" onclick="deletePaciente('${paciente.id}')">×</button>
           <div class="cabecalho">
             <h2 class="nome-leito">${paciente.nome.trim()}</h2>
             <p class="leito">Leito: ${paciente.leito}</p>
           </div>
-          
           <div class="dados-container">
             ${createDataItems(paciente)}
           </div>
-
           ${createSection('Dados Vitais', `
             <div>Pressão: ${paciente.pressaoSistolica}/${paciente.pressaoDiastolica} mmHg</div>
             <div>FC: ${paciente.frequenciaCardiaca} BPM</div>
             <div>Sat.O2: ${paciente.saturacao}%</div>
             <div>Temp: ${paciente.temperatura}°C</div>
           `)}
-
           ${createSection('Observações', Array.isArray(paciente.observacoes) ? paciente.observacoes.join(', ') : 'Nenhuma observação disponível')}
         `;
 
@@ -185,7 +176,7 @@
       if (!confirm('Deseja realmente excluir este paciente?')) return;
       
       try {
-        // Requisição DELETE utilizando credentials para envio de cookies da sessão
+        // Requisição DELETE com envio de cookies
         const response = await fetch(`https://minha-api-9sv0.onrender.com/relatorio/${id}`, {
           method: 'DELETE',
           credentials: 'include'
