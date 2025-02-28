@@ -143,39 +143,39 @@
 
         // Função para atualizar a interface
         function updateUI(data) {
-            const container = document.getElementById('data-container');
-            container.innerHTML = '';
+    const container = document.getElementById('data-container');
+    container.innerHTML = '';
 
-            data.forEach(paciente => {
-                const card = document.createElement('div');
-                card.className = 'paciente';
-                
-                card.innerHTML = `
-                    <button class="btn-excluir" onclick="deletePaciente('${paciente.id}')">×</button>
-                    <div class="cabecalho">
-                        <h2 class="nome-leito">${paciente.nome.trim()}</h2>
-                        <p class="leito">Leito: ${paciente.leito}</p>
-                    </div>
-                    
-                    <div class="dados-container">
-                        ${createDataItems(paciente)}
-                    </div>
+    data.forEach(paciente => {
+        const card = document.createElement('div');
+        card.className = 'paciente';
+        
+        card.innerHTML = `
+            <button class="btn-excluir" onclick="deletePaciente('${paciente.id}')">×</button>
+            <div class="cabecalho">
+                <h2 class="nome-leito">${paciente.nome.trim()}</h2>
+                <p class="leito">Leito: ${paciente.leito}</p>
+            </div>
+            
+            <div class="dados-container">
+                ${createDataItems(paciente)}
+            </div>
 
-                    ${createSection('Dados Vitais', `
-                        <div>Pressão: ${paciente.pressaoSistolica}/${paciente.pressaoDiastolica} mmHg</div>
-                        <div>FC: ${paciente.frequenciaCardiaca} BPM</div>
-                        <div>Sat.O2: ${paciente.saturacao}%</div>
-                        <div>Temp: ${paciente.temperatura}°C</div>
-                    `)}
+            ${createSection('Dados Vitais', `
+                <div>Pressão: ${paciente.pressaoSistolica}/${paciente.pressaoDiastolica} mmHg</div>
+                <div>FC: ${paciente.frequenciaCardiaca} BPM</div>
+                <div>Sat.O2: ${paciente.saturacao}%</div>
+                <div>Temp: ${paciente.temperatura}°C</div>
+            `)}
 
-                    ${createSection('Exames', paciente.exames.join(', '))}
-                    ${createSection('Histórico', paciente.historico.join(', '))}
-                    ${createSection('Observações', paciente.observacoes.join(', '))}
-                `;
+            ${createSection('Exames', Array.isArray(paciente.exames) ? paciente.exames.join(', ') : 'Nenhum exame disponível')}
+            ${createSection('Histórico', Array.isArray(paciente.historico) ? paciente.historico.join(', ') : 'Nenhum histórico disponível')}
+            ${createSection('Observações', Array.isArray(paciente.observacoes) ? paciente.observacoes.join(', ') : 'Nenhuma observação disponível')}
+        `;
 
-                container.appendChild(card);
-            });
-        }
+        container.appendChild(card);
+    });
+}
 
         // Função para excluir paciente
         async function deletePaciente(id) {
