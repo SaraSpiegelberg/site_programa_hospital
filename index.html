@@ -1,162 +1,153 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Monitor de Pacientes</title>
-    <style>
-        body {
-            margin: 0;
-            padding: 20px;
-            background-color: #e3f2fd;
-            font-family: 'Arial', sans-serif;
-        }
-
-        #data-container {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-            gap: 15px;
-            padding: 20px;
-        }
-
-        .card {
-            background: white;
-            border-radius: 10px;
-            padding: 15px;
-            box-shadow: 0 3px 10px rgba(0, 77, 64, 0.1);
-            border-left: 4px solid #00796b;
-        }
-
-        .card-header {
-            margin-bottom: 12px;
-        }
-
-        .nome-paciente {
-            color: #00796b;
-            margin: 0;
-            font-size: 1.4em;
-            font-weight: bold;
-        }
-
-        .leito {
-            color: #666;
-            font-size: 0.9em;
-        }
-
-        .dados-item {
-            margin: 8px 0;
-            padding: 8px;
-            background: #f8f9fa;
-            border-radius: 5px;
-        }
-
-        button {
-            background: #00796b;
-            color: white;
-            padding: 8px 16px;
-            border: none;
-            border-radius: 20px;
-            cursor: pointer;
-            position: fixed;
-            top: 20px;
-            right: 20px;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
-            transition: transform 0.2s;
-        }
-
-        button:hover {
-            transform: scale(1.05);
-            background: #00695c;
-        }
-
-        .alerta {
-            color: #d32f2f;
-            font-weight: bold;
-        }
-
-        @media (max-width: 480px) {
-            #data-container {
-                grid-template-columns: 1fr;
-                padding: 10px;
-            }
-            
-            button {
-                top: 10px;
-                right: 10px;
-                padding: 6px 12px;
-            }
-        }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Monitor de Pacientes</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 20px;
+      background-color: #e3f2fd;
+      font-family: 'Arial', sans-serif;
+    }
+    #data-container {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      gap: 15px;
+      padding: 20px;
+    }
+    .card {
+      background: white;
+      border-radius: 10px;
+      padding: 15px;
+      box-shadow: 0 3px 10px rgba(0, 77, 64, 0.1);
+      border-left: 4px solid #00796b;
+    }
+    .card-header {
+      margin-bottom: 12px;
+    }
+    .nome-paciente {
+      color: #00796b;
+      margin: 0;
+      font-size: 1.4em;
+      font-weight: bold;
+    }
+    .leito {
+      color: #666;
+      font-size: 0.9em;
+    }
+    .dados-item {
+      margin: 8px 0;
+      padding: 8px;
+      background: #f8f9fa;
+      border-radius: 5px;
+    }
+    button {
+      background: #00796b;
+      color: white;
+      padding: 8px 16px;
+      border: none;
+      border-radius: 20px;
+      cursor: pointer;
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+      transition: transform 0.2s;
+    }
+    button:hover {
+      transform: scale(1.05);
+      background: #00695c;
+    }
+    .alerta {
+      color: #d32f2f;
+      font-weight: bold;
+    }
+    @media (max-width: 480px) {
+      #data-container {
+        grid-template-columns: 1fr;
+        padding: 10px;
+      }
+      button {
+        top: 10px;
+        right: 10px;
+        padding: 6px 12px;
+      }
+    }
+  </style>
 </head>
 <body>
-    <h1>🏥 Monitor de Pacientes</h1>
-    <button id="fetch-data" title="Atualizar">↻</button>
-    <div id="data-container"></div>
+  <h1>🏥 Monitor de Pacientes</h1>
+  <button id="fetch-data" title="Atualizar">↻</button>
+  <div id="data-container"></div>
 
-    <script>
-        // Função para carregar os dados dos pacientes
-        async function loadData() {
-            try {
-                const response = await fetch('https://minha-api-9sv0.onrender.com/relatorio');
-                const pacientes = await response.json();
-                renderCards(pacientes);
-            } catch (error) {
-                console.error('Erro:', error);
-                document.getElementById('data-container').innerHTML = `
-                    <div class="card">
-                        <div class="alerta">Erro ao carregar dados: ${error.message}</div>
-                    </div>
-                `;
-            }
-        }
+  <script>
+    // Função para carregar os dados dos pacientes
+    async function loadData() {
+      try {
+        const response = await fetch('https://minha-api-9sv0.onrender.com/relatorio');
+        const pacientes = await response.json();
+        renderCards(pacientes);
+      } catch (error) {
+        console.error('Erro:', error);
+        document.getElementById('data-container').innerHTML = `
+          <div class="card">
+            <div class="alerta">Erro ao carregar dados: ${error.message}</div>
+          </div>
+        `;
+      }
+    }
 
-        // Função para renderizar os cards com os dados dos pacientes
-        function renderCards(pacientes) {
-            const container = document.getElementById('data-container');
-            container.innerHTML = pacientes.map(paciente => `
-                <div class="card">
-                    <div class="card-header">
-                        <h2 class="nome-paciente">${paciente.nome.trim()}</h2>
-                        <div class="leito">Leito: ${paciente.leito}</div>
-                    </div>
-                    
-                    <div class="dados-item ${paciente.lucidez === 'Inconsciente' ? 'alerta' : ''}">
-                        Estado: ${paciente.lucidez}
-                    </div>
+    // Função para renderizar os cards com os dados dos pacientes
+    function renderCards(pacientes) {
+      const container = document.getElementById('data-container');
+      container.innerHTML = pacientes.map(paciente => `
+        <div class="card">
+          <div class="card-header">
+            <h2 class="nome-paciente">${paciente.nome.trim()}</h2>
+            <div class="leito">Leito: ${paciente.leito}</div>
+          </div>
+          
+          <div class="dados-item ${paciente.lucidez === 'Inconsciente' ? 'alerta' : ''}">
+            Estado: ${paciente.lucidez}
+          </div>
+          <div class="dados-item">
+            Pressão: ${paciente.pressaoSistolica}/${paciente.pressaoDiastolica} mmHg
+          </div>
+          <div class="dados-item">
+            FC: ${paciente.frequenciaCardiaca} BPM
+          </div>
+          <div class="dados-item">
+            Sat.O₂: ${paciente.saturacao}%
+          </div>
+          <div class="dados-item">
+            Temperatura: ${paciente.temperatura}°C
+          </div>
+          ${paciente.dieta ? `<div class="dados-item">Dieta: ${paciente.dieta}</div>` : ''}
+          ${paciente.deambula ? `<div class="dados-item">Deambula: ${paciente.deambula}</div>` : ''}
+          ${paciente.algia ? `<div class="dados-item">Algia: ${paciente.algia}</div>` : ''}
+          ${paciente.diurese ? `<div class="dados-item">Diurese: ${paciente.diurese}</div>` : ''}
+          ${paciente.intestinais ? `<div class="dados-item">Intestinais: ${paciente.intestinais}</div>` : ''}
+          ${paciente.acesso ? `<div class="dados-item">Acesso: ${paciente.acesso}</div>` : ''}
+          ${paciente.ventilacao ? `<div class="dados-item">Ventilação: ${paciente.ventilacao}</div>` : ''}
+          ${paciente.observacoes && paciente.observacoes.length > 0 ? `
+            <div class="dados-item">
+              Observações:<br>
+              ${paciente.observacoes.join('<br>')}
+            </div>` : ''}
+        </div>
+      `).join('');
+    }
 
-                    <div class="dados-item">
-                        Pressão: ${paciente.pressaoSistolica}/${paciente.pressaoDiastolica} mmHg
-                    </div>
+    // Atualização automática a cada 5 segundos
+    setInterval(loadData, 5000);
 
-                    <div class="dados-item">
-                        FC: ${paciente.frequenciaCardiaca} BPM
-                    </div>
+    // Atualização manual ao clicar no botão
+    document.getElementById('fetch-data').addEventListener('click', loadData);
 
-                    <div class="dados-item">
-                        Sat.O₂: ${paciente.saturacao}%
-                    </div>
-
-                    <div class="dados-item">
-                        Temperatura: ${paciente.temperatura}°C
-                    </div>
-
-                    ${paciente.observacoes && paciente.observacoes.length > 0 ? `
-                    <div class="dados-item">
-                        Observações:<br>
-                        ${paciente.observacoes.join('<br>')}
-                    </div>` : ''}
-                </div>
-            `).join('');
-        }
-
-        // Atualização automática a cada 5 segundos
-        setInterval(loadData, 5000);
-
-        // Atualização manual ao clicar no botão
-        document.getElementById('fetch-data').addEventListener('click', loadData);
-
-        // Carrega os dados ao iniciar
-        loadData();
-    </script>
+    // Carrega os dados ao iniciar
+    loadData();
+  </script>
 </body>
 </html>
