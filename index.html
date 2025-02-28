@@ -55,6 +55,8 @@
     <div class="login-container" id="loginArea">
         <h2>Login</h2>
         <form onsubmit="verificarSenha(); return false;">
+            <label for="username">Usuário:</label>
+            <input type="text" id="username" required>
             <label for="senha">Senha:</label>
             <input type="password" id="senha" required>
             <button type="submit">Entrar</button>
@@ -62,16 +64,30 @@
     </div>
 
     <script>
-        const senhaCorreta = "admin"; // Altere para a senha desejada
+        async function verificarSenha() {
+            const username = document.getElementById("username").value;
+            const senha = document.getElementById("senha").value;
 
-        function verificarSenha() {
-            const senhaInput = document.getElementById("senha").value;
-            if (senhaInput === senhaCorreta) {
-                alert("Acesso permitido!");
-                localStorage.setItem("autenticado", "true"); // Armazena o estado de autenticação
-                window.location.href = "page.html"; // Redireciona para a página desejada
-            } else {
-                alert("Senha incorreta. Tente novamente.");
+            try {
+                const response = await fetch('http://127.0.0.1:5000/login', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ username, password: senha })
+                });
+
+                if (response.ok) {
+                    const data = await response.json();
+                    alert("Acesso permitido!");
+                    localStorage.setItem("autenticado", "true"); // Armazena o estado de autenticação
+                    window.location.href = "page.html"; // Redireciona para a página desejada
+                } else {
+                    alert("Senha incorreta. Tente novamente.");
+                }
+            } catch (error) {
+                console.error("Erro ao fazer a requisição:", error);
+                alert("Erro ao fazer a requisição. Tente novamente mais tarde.");
             }
         }
     </script>
