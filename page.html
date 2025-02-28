@@ -130,6 +130,12 @@
     <div id="data-container"></div>
 
     <script>
+        
+// Verificação de autenticação
+if (!localStorage.getItem("autenticado") || !localStorage.getItem("token")) {
+    window.location.href = "index.html"; // Redireciona para a página de login se não autenticado
+}
+        
         let refreshInterval;
 
         async function fetchData() {
