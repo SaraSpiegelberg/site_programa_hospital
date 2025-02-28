@@ -1,160 +1,38 @@
-<style>
-    /* Estilo Base */
-    :root {
-        --primary-color: #2A5C7D;
-        --secondary-color: #5BA4E6;
-        --background-color: #F8FBFE;
-        --text-color: #2C3E50;
-        --success-color: #4CAF50;
-        --error-color: #E74C3C;
-    }
+body {
+    font-family: Arial, sans-serif;
+    margin: 20px;
+    padding: 20px;
+    background-color: #f4f4f4;
+}
 
-    body {
-        margin: 0;
-        padding: 30px;
-        background-color: var(--background-color);
-        font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
-        line-height: 1.6;
-        color: var(--text-color);
-    }
+header {
+    background: #007BFF;
+    color: white;
+    padding: 10px 0;
+    text-align: center;
+}
 
-    h1 {
-        text-align: center;
-        color: var(--primary-color);
-        margin: 2rem 0;
-        font-size: 2.5rem;
-        font-weight: 300;
-        letter-spacing: 1px;
-        position: relative;
-        padding-bottom: 1rem;
-    }
+main {
+    margin-top: 20px;
+}
 
-    h1::after {
-        content: '';
-        position: absolute;
-        bottom: 0;
-        left: 50%;
-        transform: translateX(-50%);
-        width: 100px;
-        height: 3px;
-        background-color: var(--secondary-color);
-        border-radius: 2px;
-    }
+#data-container {
+    margin-top: 20px;
+    padding: 10px;
+    background: white;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
 
-    /* Container Principal */
-    #pacientes-container {
-        max-width: 1200px;
-        margin: 0 auto;
-        padding: 20px;
-    }
+button {
+    padding: 10px 15px;
+    background: #007BFF;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
 
-    /* Card do Paciente */
-    .paciente {
-        background: #FFFFFF;
-        border-radius: 12px;
-        padding: 25px;
-        margin-bottom: 25px;
-        box-shadow: 0 4px 6px rgba(50, 50, 93, 0.11), 0 1px 3px rgba(0, 0, 0, 0.08);
-        transition: transform 0.3s ease, box-shadow 0.3s ease;
-        border-left: 4px solid var(--secondary-color);
-    }
-
-    .paciente:hover {
-        transform: translateY(-5px);
-        box-shadow: 0 7px 14px rgba(50, 50, 93, 0.1), 0 3px 6px rgba(0, 0, 0, 0.08);
-    }
-
-    .cabecalho h2 {
-        color: var(--primary-color);
-        margin: 0 0 0.5rem 0;
-        font-size: 1.8rem;
-        font-weight: 600;
-    }
-
-    .leito {
-        color: var(--secondary-color);
-        font-size: 1.1rem;
-        font-weight: 500;
-        margin-bottom: 1.5rem;
-    }
-
-    /* Container de Dados */
-    .dados-container {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-        gap: 15px;
-        margin: 1.5rem 0;
-    }
-
-    .dados-item {
-        background: #F8FAFC;
-        padding: 15px;
-        border-radius: 8px;
-        border: 1px solid #E2E8F0;
-    }
-
-    .dados-item strong {
-        color: var(--primary-color);
-        display: block;
-        margin-bottom: 0.5rem;
-        font-size: 0.9rem;
-        text-transform: uppercase;
-        letter-spacing: 0.5px;
-    }
-
-    /* Seção de Observações */
-    .secao {
-        background: #F8FAFC;
-        padding: 15px;
-        border-radius: 8px;
-        margin-top: 1.5rem;
-    }
-
-    .secao strong {
-        color: var(--primary-color);
-        display: block;
-        margin-bottom: 0.8rem;
-        font-size: 1.1rem;
-    }
-
-    /* Estados de Carregamento e Erro */
-    #loading {
-        text-align: center;
-        font-size: 1.2rem;
-        color: var(--primary-color);
-        padding: 2rem;
-        animation: pulse 1.5s infinite;
-    }
-
-    .error {
-        background: #FEE2E2;
-        color: var(--error-color);
-        padding: 1.5rem;
-        border-radius: 8px;
-        margin: 2rem auto;
-        max-width: 600px;
-        text-align: center;
-        border: 1px solid #FECACA;
-    }
-
-    /* Responsividade */
-    @media (max-width: 768px) {
-        body {
-            padding: 15px;
-        }
-
-        h1 {
-            font-size: 2rem;
-        }
-
-        .dados-container {
-            grid-template-columns: 1fr;
-        }
-    }
-
-    @keyframes pulse {
-        0% { opacity: 1; }
-        50% { opacity: 0.5; }
-        100% { opacity: 1; }
-    }
-</style>
+button:hover {
+    background: #0056b3;
+}
